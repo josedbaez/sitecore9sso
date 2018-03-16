@@ -1,0 +1,10 @@
+﻿@inherits System.Web.Mvc.WebViewPage 
+@using Sitecore.Mvc
+<div>
+    <h1 class="contentTitle">
+        @Html.Sitecore().Field("title")
+    </h1>
+    <div class="contentDescription">
+        @Html.Sitecore().Field("text")
+    </div>
+</div>

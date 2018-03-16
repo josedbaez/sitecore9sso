@@ -1,0 +1,15 @@
+﻿@using Sitecore
+@using Sitecore.Mvc
+
+@model IEnumerable<Sitecore.Data.SignInUrlInfo>
+
+@foreach (var signIn in Model)
+{
+    using (Html.BeginForm(null, null, FormMethod.Post, new { @action = signIn.Href }))
+    {
+        <button type="submit">
+            <img src="@signIn.Icon" />
+            @signIn.Caption
+        </button>
+    }
+}
