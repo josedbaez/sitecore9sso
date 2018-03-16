@@ -164,6 +164,7 @@
     <Compile Include="Pipelines\IdentityProviders\GoogleIdentityProvider.cs" />
     <Compile Include="Pipelines\IdentityProviders\FacebookIdentityProvider.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Services\CustomExternalUserBuilder.cs" />
   </ItemGroup>
   <ItemGroup />
   <PropertyGroup>
