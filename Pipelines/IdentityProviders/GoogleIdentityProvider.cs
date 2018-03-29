@@ -11,9 +11,10 @@
     public class GoogleIdentityProvider : IdentityProvidersProcessor
     {
         protected override string IdentityProviderName => "Google";
-        private const string ClientId = "client id here";
-        private const string ClientSecret = "client secret here";
+        private const string ClientId = "your clientid here";
+        private const string ClientSecret = "your clientsecret here";
 
+        protected IdentityProvider IdentityProvider { get; set; }
 
         public GoogleIdentityProvider(FederatedAuthenticationConfiguration federatedAuthenticationConfiguration)
             : base(federatedAuthenticationConfiguration)
@@ -23,19 +24,14 @@
         protected override void ProcessCore(IdentityProvidersArgs args)
         {
             Assert.ArgumentNotNull(args, "args");
-            IdentityProvider identityProvider = this.GetIdentityProvider();
+            IdentityProvider = this.GetIdentityProvider();
 
             var provider = new Microsoft.Owin.Security.Google.GoogleOAuth2AuthenticationProvider
             {
                 OnAuthenticated = (context) =>
                 {
                     //map claims
-                    context.Identity.ApplyClaimsTransformations(new TransformationContext(this.FederatedAuthenticationConfiguration, identityProvider));
-                    return Task.CompletedTask;
-                },
-
-                OnReturnEndpoint = (context) =>
-                {
+                    context.Identity.ApplyClaimsTransformations(new TransformationContext(this.FederatedAuthenticationConfiguration, IdentityProvider));
                     return Task.CompletedTask;
                 }
             };
@@ -44,7 +40,8 @@
             {
                 ClientId = ClientId,
                 ClientSecret = ClientSecret,
-                Provider = provider
+                Provider = provider,
+                AuthenticationType = IdentityProvider.Name
             };
 
             args.App.UseGoogleAuthentication(googleAuthOptions);

@@ -11,9 +11,10 @@
     public class FacebookIdentityProvider : IdentityProvidersProcessor
     {
         protected override string IdentityProviderName => "Facebook";
-        private const string AppId = "client id here";
-        private const string AppSecret = "client secret here";
+        private const string AppId = "your appid here";
+        private const string AppSecret = "your appsecret here";
 
+        protected IdentityProvider IdentityProvider { get; set; }
 
         public FacebookIdentityProvider(FederatedAuthenticationConfiguration federatedAuthenticationConfiguration)
             : base(federatedAuthenticationConfiguration)
@@ -23,28 +24,28 @@
         protected override void ProcessCore(IdentityProvidersArgs args)
         {
             Assert.ArgumentNotNull(args, "args");
-            IdentityProvider identityProvider = this.GetIdentityProvider();
+            IdentityProvider = this.GetIdentityProvider();
 
             var provider = new Microsoft.Owin.Security.Facebook.FacebookAuthenticationProvider
             {
                 OnAuthenticated = (context) =>
                 {
                     //map claims
-                    context.Identity.ApplyClaimsTransformations(new TransformationContext(this.FederatedAuthenticationConfiguration, identityProvider));
+                    context.Identity.ApplyClaimsTransformations(new TransformationContext(this.FederatedAuthenticationConfiguration, IdentityProvider));
                     return Task.CompletedTask;
                 },
-
                 OnReturnEndpoint = (context) =>
                 {
                     return Task.CompletedTask;
-                }
+                },
             };
 
             var fbAuthOptions = new Microsoft.Owin.Security.Facebook.FacebookAuthenticationOptions
             {
                 AppId = AppId,
                 AppSecret = AppSecret,
-                Provider = provider
+                Provider = provider,
+                AuthenticationType = IdentityProvider.Name
             };
 
             args.App.UseFacebookAuthentication(fbAuthOptions);
